@@ -1,9 +1,11 @@
-import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod/v3";
 import { type ModelConfig, config } from "../config.ts";
-import { createAgent, providerStrategy } from "langchain";
-import { th } from "zod/v4/locales";
+
+type StructuredResult<T> =
+  | { success: true; data: T }
+  | { success: false; error: string };
 
 export class OpenRouterService {
   private config: ModelConfig;
@@ -33,14 +35,8 @@ export class OpenRouterService {
     systemPrompt: string,
     userPrompt: string,
     schema: z.ZodSchema<T>,
-  ) {
+  ): Promise<StructuredResult<T>> {
     try {
-      const agent = createAgent({
-        model: this.llmClient,
-        tools: [],
-        responseFormat: providerStrategy(schema),
-      });
-
       const messages = [
         new SystemMessage(systemPrompt),
         new HumanMessage(
@@ -48,11 +44,16 @@ export class OpenRouterService {
         ),
       ];
 
-      const data = await agent.invoke({ messages });
+      const response = await this.llmClient.invoke(messages);
+      const content =
+        typeof response.content === "string"
+          ? response.content
+          : JSON.stringify(response.content);
 
-      return { success: true, data: data.structuredResponse };
+      const parsedJson = JSON.parse(this.extractJsonObject(content));
+      return { success: true, data: schema.parse(parsedJson) };
     } catch (error) {
-      console.error("❌ Error in OpenRouterService.generateStructured:", error);
+      console.error("Error in OpenRouterService.generateStructured:", error);
       return {
         success: false,
         error:
@@ -61,5 +62,16 @@ export class OpenRouterService {
             : "An error occurred during structured generation",
       };
     }
+  }
+
+  private extractJsonObject(content: string) {
+    const start = content.indexOf("{");
+    const end = content.lastIndexOf("}");
+
+    if (start === -1 || end === -1 || end < start) {
+      throw new Error(`Model did not return a JSON object: ${content}`);
+    }
+
+    return content.slice(start, end + 1);
   }
 }
