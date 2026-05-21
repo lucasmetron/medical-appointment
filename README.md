@@ -295,5 +295,3 @@ Requires Node.js >= 22.0.0 for TypeScript strip-types support.
 ## License
 
 MIT
-#   m e d i c a l - a p p o i n t m e n t  
- 

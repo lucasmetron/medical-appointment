@@ -19,18 +19,13 @@ console.assert(
   "OPENROUTER_API_KEY is not set in environment variables",
 );
 
-console.assert(
-  process.env.OPENROUTER_MODEL,
-  "OPENROUTER_MODEL is not set in environment variables",
-);
-
 export const config: ModelConfig = {
   apiKey: process.env.OPENROUTER_API_KEY!,
   httpReferer: "",
   xTitle: "IA Devs - Prompt Chaining Article Generator",
   models: [
-    "google/gemma-4-26b-a4b-it:free",
-    process.env.OPENROUTER_MODEL || "upstage/solar-pro-3:free",
+    // https://openrouter.ai/models?fmt=cards&max_price=0&supported_parameters=response_format
+    "openrouter/free",
   ],
   provider: {
     sort: {
