@@ -15,6 +15,8 @@ export function createMessageGeneratorNode(llmClient: OpenRouterService) {
                 datetime: state.datetime,
                 patientName: state.patientName,
                 error: state.error,
+                actionError: state.actionError,
+                availableProfessionals: state.availableProfessionals,
             }
 
             const systemPrompt = getSystemPrompt()

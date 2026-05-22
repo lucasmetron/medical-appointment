@@ -35,7 +35,7 @@ export const getSystemPrompt = (professionals: any[]) => {
       }
     },
     extraction_instructions: {
-      professionalId: 'Match the professional name mentioned in the question to the ID from the professionals list. Use fuzzy matching.',
+      professionalId: 'Match the professional name mentioned in the question to the ID from the professionals list. Use fuzzy matching only when it is clearly the same professional. If no professional matches, do not set professionalId.',
       professionalName: 'Extract the professional name as mentioned by the user',
       datetime: 'Parse relative dates (today, tomorrow) and times. Convert to ISO format. Use current_date as reference.',
       patientName: 'Extract the patient name from the question or context',
@@ -65,7 +65,8 @@ export const getUserPromptTemplate = (question: string) => {
       'Carefully analyze the question to determine the user intent',
       'Extract all relevant appointment details',
       'Convert dates and times to ISO format',
-      'Match professional names to their IDs',
+      'Match professional names only to IDs from the professionals list',
+      'If the requested professional is not in the professionals list, keep the schedule intent but omit professionalId',
       'Return only the fields that are present in the question'
     ]
   });

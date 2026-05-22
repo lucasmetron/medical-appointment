@@ -12,15 +12,21 @@ export function createSchedulerNode(appointmentService: AppointmentService) {
   return async (state: GraphState): Promise<Partial<GraphState>> => {
     console.log(`📅 Scheduling appointment...`);
 
+    const availableProfessionals = appointmentService.getProfessionals();
+
     try {
       const validation = ScheduleRequiredFieldsSchema.safeParse(state)
 
       if(!validation.success){
-        const errorMessages = validation.error.errors.map(e => e.message).join(', ')
+        const missingProfessional = validation.error.errors.some(error => error.path.includes('professionalId'))
+        const errorMessages = missingProfessional
+          ? 'Profissional nao encontrado na lista de atendimento'
+          : validation.error.errors.map(e => e.message).join(', ')
         console.log(`⚠️  Validation failed: ${errorMessages}`);
         return {
           actionSuccess: false,
           actionError: errorMessages,
+          availableProfessionals,
         }
       }
 
@@ -52,6 +58,7 @@ export function createSchedulerNode(appointmentService: AppointmentService) {
         ...state,
         actionSuccess: false,
         actionError: error instanceof Error ? error.message : 'Scheduling failed',
+        availableProfessionals,
       };
     }
   };

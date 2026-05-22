@@ -44,6 +44,14 @@ const appointments = [
 
 export class AppointmentService {
 
+    getProfessionals() {
+        return professionals;
+    }
+
+    getProfessionalById(professionalId: number) {
+        return professionals.find(professional => professional.id === professionalId);
+    }
+
     getAppointmentsForProfessional(professionalId: number, date: Date, patientName?: string) {
         return appointments.find(appointment =>
             appointment.professionalId === professionalId &&
@@ -58,6 +66,10 @@ export class AppointmentService {
     }
 
     bookAppointment(professionalId: number, date: Date, patientName: string, reason: string) {
+        if (!this.getProfessionalById(professionalId)) {
+            throw new Error('Profissional nao encontrado na lista de atendimento');
+        }
+
         if (!this.checkAvailability(professionalId, date)) {
             throw new Error('Horário indisponível para este profissional');
         }

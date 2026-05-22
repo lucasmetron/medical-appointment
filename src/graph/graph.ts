@@ -32,6 +32,11 @@ const AppointmentStateAnnotation = z.object({
   actionSuccess: z.boolean().optional(),
   actionError: z.string().optional(),
   appointmentData: z.any().optional(),
+  availableProfessionals: z.array(z.object({
+    id: z.number(),
+    name: z.string(),
+    specialty: z.string(),
+  })).optional(),
 
   error: z.string().optional(),
 });

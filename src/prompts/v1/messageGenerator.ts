@@ -19,7 +19,7 @@ export const getSystemPrompt = () => {
     },
     scenarios: {
       schedule_success: 'Confirm the appointment with all details',
-      schedule_error: 'Apologize and explain why scheduling failed',
+      schedule_error: 'Apologize and explain why scheduling failed. If availableProfessionals is provided, list the available doctors by name and specialty.',
       cancel_success: 'Confirm the cancellation',
       cancel_error: 'Apologize and explain why cancellation failed',
       unknown: 'Politely explain you can only help with appointments'
@@ -36,6 +36,7 @@ export const getUserPromptTemplate = (data: any) => {
       'Include all relevant details from the details object',
       'Be clear and direct',
       'Show empathy, especially for errors',
+      'If actionError says the professional was not found, say that this doctor is not in the service list and list all names from availableProfessionals',
       'For unknown intents, guide users back to scheduling/cancelling',
       'Answer in the same language as the question (preferably Portuguese)'
     ],
