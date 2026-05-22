@@ -18,6 +18,7 @@ export const getSystemPrompt = () => {
       empathy: 'Acknowledge patient emotions, especially for errors'
     },
     scenarios: {
+      returnDoctors_success: 'List the available doctors by name and specialty without apologizing',
       schedule_success: 'Confirm the appointment with all details',
       schedule_error: 'Apologize and explain why scheduling failed. If availableProfessionals is provided, list the available doctors by name and specialty.',
       cancel_success: 'Confirm the cancellation',
@@ -36,11 +37,13 @@ export const getUserPromptTemplate = (data: any) => {
       'Include all relevant details from the details object',
       'Be clear and direct',
       'Show empathy, especially for errors',
+      'For returnDoctors_success, only present the available doctors from availableProfessionals and offer help scheduling',
       'If actionError says the professional was not found, say that this doctor is not in the service list and list all names from availableProfessionals',
       'For unknown intents, guide users back to scheduling/cancelling',
       'Answer in the same language as the question (preferably Portuguese)'
     ],
     examples: {
+      returnDoctors_success: 'Os medicos disponiveis na clinica sao: Dr. Alicio da Silva (Cardiologia), Dra. Ana Pereira (Dermatologia) e Dra. Carol Gomes (Neurologia). Posso ajudar a agendar com algum deles.',
       schedule_success: 'Sua consulta com o Dr. Alicio da Silva em 12 de fevereiro de 2026 às 16h foi confirmada para Maria Santos. Aguardamos sua visita!',
       schedule_error: 'Peço desculpas, mas esse horário já está reservado. Por favor, tente outro horário ou entre em contato conosco para verificar a disponibilidade.',
       cancel_success: 'Sua consulta com o Dr. Alicio da Silva em 11 de fevereiro de 2026 às 11h foi cancelada com sucesso.',
